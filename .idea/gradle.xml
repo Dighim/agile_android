@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="/usr/local/virtual_machine/android-2.3/blondeaa/AndroidStudioProjects/TaverneOubliee" />
-            <option value="/usr/local/virtual_machine/android-2.3/blondeaa/AndroidStudioProjects/TaverneOubliee/app" />
+            <option value="/usr/local/virtual_machine/android-2.3/blondeaa/AndroidStudioProjects/agile_android" />
+            <option value="/usr/local/virtual_machine/android-2.3/blondeaa/AndroidStudioProjects/agile_android/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
