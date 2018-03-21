@@ -1,3 +1,8 @@
 <resources>
+    <string name="descriptionLogo">Logo</string>
+    <string name="titre">La Taverne Oubliee</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="co">CONNEXION</string>
     <string name="app_name">Taverne Oubliee</string>
 </resources>
