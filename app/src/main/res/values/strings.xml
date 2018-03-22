@@ -5,4 +5,6 @@
     <string name="password">PASSWORD</string>
     <string name="co">CONNEXION</string>
     <string name="app_name">Taverne Oubliee</string>
+    <string name="dice">dice</string>
+    <string name="table">table</string>
 </resources>
