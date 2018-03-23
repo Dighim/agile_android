@@ -3,9 +3,12 @@ package com.example.blondeaa.taverneoubliee;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +40,24 @@ import java.util.Map;
 
 public class TaverneOublieeAccueil extends AppCompatActivity {
     String user = "";
-    final String URL = "http://5.135.124.212/v1/user/";
+    final String URL = "http://5.135.124.212/v1/";
     String pseudo="";
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.allTable :
+                    getSupportFragmentManager().beginTransaction().add(R.id.content,new fragAll());
+                    return true;
+                case R.id.userTable :
+                    getSupportFragmentManager().beginTransaction().add(R.id.content,new fragUser()).commit();
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +72,7 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
         mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, (URL+user),
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, (URL+"user/"+user),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -79,23 +98,43 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
                         Log.e("Test profil existant","Non " + (URL+user));
                     }
                 });
-        /*{
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                EditText username = (EditText) findViewById(R.id.username);
-                EditText mdp = (EditText) findViewById(R.id.password);
-
-                headers.put("Authorization", "Basic " + Base64.encodeToString((username.getText().toString()+":"+mdp.getText().toString()).getBytes(),Base64.DEFAULT));
-                return headers;
-            }
-        };*/
-
+        stringRequest.addMarker("getUser");
         mRequestQueue.add(stringRequest);
+        /*mRequestQueue.cancelAll("getUser");
+
+        StringRequest requestTables = new StringRequest(Request.Method.GET, (URL+"table/"),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        JSONParser parser = new JSONParser();
+                        try {
+                            JSONObject json = (JSONObject) parser.parse(response);
+                            pseudo =json.get("pseudo").toString();
+                            TextView tv = (TextView)findViewById(R.id.pseudo);
+                            tv .setText(tv.getText()+" "+pseudo);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
 
 
+                        Log.e("Test profil existant","Pseudo :"+ pseudo);
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Test profil existant","Non " + (URL+user));
+                    }
+                });*/
+
+        getSupportFragmentManager().beginTransaction().add(R.id.content,new fragAll()).commit();
+
+        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
+
+        nav.setOnNavigationItemSelectedListener((mOnNavigationItemSelectedListener));
     }
 
 }

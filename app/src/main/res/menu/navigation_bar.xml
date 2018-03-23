@@ -2,19 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/allTable"
         android:icon="@drawable/group"
         android:title="@string/all" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/userTable"
         android:icon="@drawable/user"
         android:title="@string/userOnly" />
-
-    <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/user"
-        android:title="@string/username" />
 
 
 </menu>

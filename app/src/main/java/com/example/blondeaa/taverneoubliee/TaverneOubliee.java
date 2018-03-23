@@ -75,10 +75,11 @@ public class TaverneOubliee extends AppCompatActivity {
                         /*TextView tv = (TextView) findViewById(R.id.titreCo);
                         tv.setText(user);*/
                         auth=true;
+                        Log.e("Connexion","Success");
+                        Log.e("REPONSE",response);
                         intent.putExtra("user", user);
                         startActivity(intent);
-                        Log.e("Connexion","Success");
-                        Log.e("Changement bool", String.valueOf(auth));
+
 
                     }
                 },
