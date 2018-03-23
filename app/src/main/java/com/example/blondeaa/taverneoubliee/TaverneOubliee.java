@@ -1,13 +1,17 @@
 package com.example.blondeaa.taverneoubliee;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -21,6 +25,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,10 +34,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TaverneOubliee extends AppCompatActivity {
     private static final String URL = "http://5.135.124.212/v1/user";
    // private RequestQueue mRequestQueue;
     private String user = "NOPE";
+    private boolean auth=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +56,8 @@ public class TaverneOubliee extends AppCompatActivity {
 
 
     public void onConnexion(View v){
-        Intent intent = new Intent(TaverneOubliee.this, TaverneOublieeAccueil.class);
-
+        final Intent intent = new Intent(TaverneOubliee.this, TaverneOublieeAccueil.class);
+        auth =false;
         RequestQueue mRequestQueue;
 
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -61,29 +70,47 @@ public class TaverneOubliee extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        TextView tv = (TextView) findViewById(R.id.titreCo);
-                        //tv.setText(response);
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            JSONArray array = obj.getJSONArray();
-                            Log.e("String to JSONObject", "Success : "+response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        EditText username = findViewById(R.id.username);
+                        user =username.getText().toString();
+                        /*TextView tv = (TextView) findViewById(R.id.titreCo);
+                        tv.setText(user);*/
+                        auth=true;
+                        intent.putExtra("user", user);
+                        startActivity(intent);
                         Log.e("Connexion","Success");
+                        Log.e("Changement bool", String.valueOf(auth));
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
+                        Context ctx = getApplicationContext();
+                        String errorMsg = "Connection Failed";
+                        Toast.makeText(ctx,errorMsg,Toast.LENGTH_LONG).show();
                         Log.e("Connexion",error.toString());
                     }
-                });
+                })
+        {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                EditText username = (EditText) findViewById(R.id.username);
+                EditText mdp = (EditText) findViewById(R.id.password);
+
+                headers.put("Authorization", "Basic " + Base64.encodeToString((username.getText().toString()+":"+mdp.getText().toString()).getBytes(),Base64.DEFAULT));
+                return headers;
+            }
+        };
 
         mRequestQueue.add(stringRequest);
-
-        intent.putExtra("Pseudo",user);
-        //startActivity(intent);
+        /*Log.e("Verif Bool", String.valueOf(auth));
+        if(auth==true) {
+            intent.putExtra("User", user);
+            startActivity(intent);
+        }*/
 
     }
 }
