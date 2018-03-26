@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,9 +44,9 @@ import org.json.simple.parser.ParseException;*/
  */
 public class FragAll extends Fragment {
     private final String URL = "http://5.135.124.212/v1/table";
-    private ArrayAdapter<String> adapter =null;
     private ArrayList<String> listItem = new ArrayList<String>();
     private ListView list = null;
+    private LinearLayout linearLayout;
 
 
     public static FragAll newInstance(){
@@ -58,9 +59,7 @@ public class FragAll extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.e("Creation adapter", String.valueOf(adapter!=null));
-
+        //Log.e("Creation adapter", String.valueOf(adapter!=null));
 
 
 
@@ -68,13 +67,10 @@ public class FragAll extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View viewCreate = inflater.inflate(R.layout.fragment_frag_all, container, false);
+        final View viewCreate = inflater.inflate(R.layout.fragment_frag_all, container, false);
         list = (ListView)viewCreate.findViewById(R.id.listAll);
-        adapter = new MonTacheAdapter(this.getContext());
 
         Log.e("TOZ CREATE VIEW",String.valueOf(list !=null));
-
         RequestQueue mRequestQueue;
 
         Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
@@ -88,7 +84,6 @@ public class FragAll extends Fragment {
                     @Override
                     public void onResponse(String response) {
 
-                        //JSONParser parser = new JSONParser();
                         try {
                             JSONArray tab = new JSONArray(response);
                             for(int i = 0 ; i < tab.length();i++){
@@ -100,6 +95,7 @@ public class FragAll extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                         Log.e("Test profil existant","Table");
                         Log.e("Reponse table", response);
 
@@ -113,8 +109,7 @@ public class FragAll extends Fragment {
                     }
                 });
         mRequestQueue.add(requestTables);
-
-        Log.e("toz",String.valueOf(list==null));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(),R.layout.simple_list_view,listItem);
         list.setAdapter(adapter);
         return viewCreate;
 
@@ -123,18 +118,5 @@ public class FragAll extends Fragment {
 
 
 
-    class MonTacheAdapter extends ArrayAdapter {
-        MonTacheAdapter(Context c) {
-            super(c, R.layout.simple_list_view, listItem);
-        }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater=getLayoutInflater();
-            View row=inflater.inflate(R.layout.simple_list_view, parent, false);
-            TextView label=(TextView)row.findViewById(R.id.label);
-
-            label.setText(listItem.get(position));
-            return(row);
-        }
-    }
 }

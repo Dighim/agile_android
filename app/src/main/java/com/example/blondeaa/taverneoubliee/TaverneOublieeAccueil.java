@@ -61,7 +61,7 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
                         break;
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content, selectedFragment);
+                transaction.replace(R.id.parent, selectedFragment);
                 transaction.commit();
                 return true;
             }
@@ -109,7 +109,7 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
         mRequestQueue.add(stringRequest);
 
 
-        getSupportFragmentManager().beginTransaction().add(R.id.content,new FragAll()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.parent,new FragAll()).commit();
 
         BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
 
