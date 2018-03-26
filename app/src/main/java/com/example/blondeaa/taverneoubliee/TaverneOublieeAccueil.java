@@ -1,19 +1,15 @@
 package com.example.blondeaa.taverneoubliee;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Network;
 import com.android.volley.Request;
@@ -25,14 +21,12 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-//import org.json.simple.parser.ParseException;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by blondeaa on 22/03/18.
@@ -43,26 +37,36 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
     final String URL = "http://5.135.124.212/v1/";
     String pseudo="";
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()){
-                case R.id.allTable :
-                    getSupportFragmentManager().beginTransaction().add(R.id.content,new fragAll());
-                    return true;
-                case R.id.userTable :
-                    getSupportFragmentManager().beginTransaction().add(R.id.content,new fragUser()).commit();
-                    return true;
-            }
-            return false;
-        }
-    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.taverne_oubliee_accueil);
         user =getIntent().getStringExtra("user");
+
+        BottomNavigationView bottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment =null;
+                switch (item.getItemId()){
+                    case R.id.allTable :
+                        //getSupportFragmentManager().beginTransaction().add(R.id.content,new FragAll());
+                        selectedFragment = FragAll.newInstance();
+                        break;
+                    case R.id.userTable :
+                        //getSupportFragmentManager().beginTransaction().add(R.id.content,new FragUser()).commit();
+                        selectedFragment = FragUser.newInstance();
+                        break;
+                }
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.content, selectedFragment);
+                transaction.commit();
+                return true;
+            }
+        });
+
 
         RequestQueue mRequestQueue;
 
@@ -88,6 +92,8 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
                         }
 
 
+
+
                         Log.e("Test profil existant","Pseudo :"+ pseudo);
 
                     }
@@ -101,40 +107,12 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
 
         stringRequest.addMarker("getUser");
         mRequestQueue.add(stringRequest);
-        /*mRequestQueue.cancelAll("getUser");
-
-        StringRequest requestTables = new StringRequest(Request.Method.GET, (URL+"table/"),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        JSONParser parser = new JSONParser();
-                        try {
-                            JSONObject json = (JSONObject) parser.parse(response);
-                            pseudo =json.get("pseudo").toString();
-                            TextView tv = (TextView)findViewById(R.id.pseudo);
-                            tv .setText(tv.getText()+" "+pseudo);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
 
 
-                        Log.e("Test profil existant","Pseudo :"+ pseudo);
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Test profil existant","Non " + (URL+user));
-                    }
-                });*/
-
-        getSupportFragmentManager().beginTransaction().add(R.id.content,new fragAll()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.content,new FragAll()).commit();
 
         BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
 
-        nav.setOnNavigationItemSelectedListener((mOnNavigationItemSelectedListener));
-    }
+     }
 
 }
