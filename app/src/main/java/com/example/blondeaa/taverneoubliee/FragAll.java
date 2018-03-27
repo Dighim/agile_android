@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Cache;
@@ -31,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /*import org.json.simple.JSONArray;
@@ -46,6 +48,7 @@ public class FragAll extends ListFragment {
     private final String URL = "http://5.135.124.212/v1/table";
     private ArrayList<String> listItem = new ArrayList<String>();
     private ListView list = null;
+
     private LinearLayout linearLayout;
 
 
@@ -74,7 +77,6 @@ public class FragAll extends ListFragment {
         Log.e("boucle","-1");
         super.onActivityCreated(savedInstanceState);
         RequestQueue mRequestQueue;
-
         Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
         Network network = new BasicNetwork(new HurlStack());
 
@@ -92,9 +94,16 @@ public class FragAll extends ListFragment {
                             for(int i = 0 ; i < tab.length();i++){
                                 JSONObject obj = tab.getJSONObject(i);
                                 String name = obj.getString("intitule");
-                                listItem.add(name);
+                                String date = obj.getString("date");
+                                date = date.substring(0,10);
+                                String heure = obj.getString("date");
+                                heure = heure.substring(11,16);
+                                String lieu = obj.getString("lieu");
+
+                                String message = name +" le " +date+" à "+heure+ " à "+lieu;
+                                listItem.add(message);
                             }
-                            ArrayAdapter adapter = new ArrayAdapter(getActivity(),R.layout.simple_list_view,listItem);
+                            ArrayAdapter adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,listItem);
                             setListAdapter(adapter);
 
                         } catch (JSONException e) {

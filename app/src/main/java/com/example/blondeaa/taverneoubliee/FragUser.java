@@ -92,15 +92,21 @@ public class FragUser extends ListFragment {
                             JSONArray tab = new JSONArray(response);
                             for(int i = 0 ; i < tab.length();i++){
                                 JSONObject obj = tab.getJSONObject(i);
-                                String name = obj.getString("intitule");
-                                Log.e("crea = ",obj.getString("crea"));
-                                Log.e("id",id);
+
                                 if(obj.getString("crea").equals(id)) {
-                                    listItem.add(name);
+                                    String name = obj.getString("intitule");
+
+                                    String message;
+                                    String date = obj.getString("date");
+                                    date = date.substring(0,10);
+                                    String heure = obj.getString("date");
+                                    heure = heure.substring(11,16);
+                                    String lieu = obj.getString("lieu");
+                                    message = name +" le " +date+" à "+heure+ "à "+lieu;
+                                    listItem.add(message);
                                 }
-                                //Log.e("test array",listItem.get(0));
                             }
-                            ArrayAdapter adapter = new ArrayAdapter(getActivity(),R.layout.simple_list_view,listItem);
+                            ArrayAdapter adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,listItem);
                             setListAdapter(adapter);
 
                         } catch (JSONException e) {
