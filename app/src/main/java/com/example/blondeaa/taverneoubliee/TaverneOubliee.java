@@ -39,7 +39,6 @@ import java.util.Map;
 
 public class TaverneOubliee extends AppCompatActivity {
     private static final String URL = "http://5.135.124.212/v1/user";
-   // private RequestQueue mRequestQueue;
     private String user = "NOPE";
     private boolean auth=false;
 
@@ -76,7 +75,7 @@ public class TaverneOubliee extends AppCompatActivity {
                         tv.setText(user);*/
                         auth=true;
                         Log.e("Connexion","Success");
-                        Log.e("REPONSE",response);
+
                         intent.putExtra("user", user);
                         startActivity(intent);
 

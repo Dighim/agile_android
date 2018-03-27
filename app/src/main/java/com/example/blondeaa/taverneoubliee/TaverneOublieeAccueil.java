@@ -36,6 +36,7 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
     String user = "";
     final String URL = "http://5.135.124.212/v1/";
     String pseudo="";
+    String id ="";
 
 
 
@@ -44,28 +45,8 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.taverne_oubliee_accueil);
         user =getIntent().getStringExtra("user");
+        //Log.e("debug boucle","1");
 
-        BottomNavigationView bottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
-        bottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment =null;
-                switch (item.getItemId()){
-                    case R.id.allTable :
-                        //getSupportFragmentManager().beginTransaction().add(R.id.content,new FragAll());
-                        selectedFragment = FragAll.newInstance();
-                        break;
-                    case R.id.userTable :
-                        //getSupportFragmentManager().beginTransaction().add(R.id.content,new FragUser()).commit();
-                        selectedFragment = FragUser.newInstance();
-                        break;
-                }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.parent, selectedFragment);
-                transaction.commit();
-                return true;
-            }
-        });
 
 
         RequestQueue mRequestQueue;
@@ -85,8 +66,9 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
                         try {
                             JSONObject json = (JSONObject) parser.parse(response);
                             pseudo =json.get("pseudo").toString();
+                            id = json.get("id").toString();
                             TextView tv = (TextView)findViewById(R.id.pseudo);
-                            tv .setText(tv.getText()+" "+pseudo);
+                            tv.setText(tv.getText()+" "+pseudo);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -105,13 +87,30 @@ public class TaverneOublieeAccueil extends AppCompatActivity {
                     }
                 });
 
-        stringRequest.addMarker("getUser");
         mRequestQueue.add(stringRequest);
+        BottomNavigationView bottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment =null;
+                switch (item.getItemId()){
+                    case R.id.allTable :
+                        selectedFragment = FragAll.newInstance();
+                        break;
+                    case R.id.userTable :
+                        selectedFragment = FragUser.newInstance(id);
+                        break;
+                }
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.parent, selectedFragment);
+                transaction.commit();
+                return true;
+            }
+        });
 
 
         getSupportFragmentManager().beginTransaction().add(R.id.parent,new FragAll()).commit();
 
-        BottomNavigationView nav = (BottomNavigationView) findViewById(R.id.navigation);
 
      }
 

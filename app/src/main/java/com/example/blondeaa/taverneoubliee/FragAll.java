@@ -42,7 +42,7 @@ import org.json.simple.parser.ParseException;*/
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragAll extends Fragment {
+public class FragAll extends ListFragment {
     private final String URL = "http://5.135.124.212/v1/table";
     private ArrayList<String> listItem = new ArrayList<String>();
     private ListView list = null;
@@ -55,22 +55,24 @@ public class FragAll extends Fragment {
     }
 
 
-
-    @Override
+    /*@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Log.e("Creation adapter", String.valueOf(adapter!=null));
 
+    }*/
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.e("boucle","ext");
+        View view = inflater.inflate(R.layout.fragment_all, container, false);
+        return view;
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View viewCreate = inflater.inflate(R.layout.fragment_frag_all, container, false);
-        list = (ListView)viewCreate.findViewById(R.id.listAll);
-
-        Log.e("TOZ CREATE VIEW",String.valueOf(list !=null));
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.e("boucle","-1");
+        super.onActivityCreated(savedInstanceState);
         RequestQueue mRequestQueue;
 
         Cache cache = new DiskBasedCache(getActivity().getCacheDir(), 1024 * 1024); // 1MB cap
@@ -78,12 +80,13 @@ public class FragAll extends Fragment {
 
         mRequestQueue = new RequestQueue(cache, network);
         mRequestQueue.start();
+        Log.e("bouble","0");
 
-        StringRequest requestTables = new StringRequest(Request.Method.GET, (URL),
+        StringRequest requestTables = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.e("boucle","1");
                         try {
                             JSONArray tab = new JSONArray(response);
                             for(int i = 0 ; i < tab.length();i++){
@@ -91,13 +94,12 @@ public class FragAll extends Fragment {
                                 String name = obj.getString("intitule");
                                 listItem.add(name);
                             }
+                            ArrayAdapter adapter = new ArrayAdapter(getActivity(),R.layout.simple_list_view,listItem);
+                            setListAdapter(adapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        Log.e("Test profil existant","Table");
-                        Log.e("Reponse table", response);
 
 
                     }
@@ -109,9 +111,6 @@ public class FragAll extends Fragment {
                     }
                 });
         mRequestQueue.add(requestTables);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(),R.layout.simple_list_view,listItem);
-        list.setAdapter(adapter);
-        return viewCreate;
 
     }
 
